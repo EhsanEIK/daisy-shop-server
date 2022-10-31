@@ -48,6 +48,24 @@ const run = async () => {
             res.send(product);
         })
 
+        // PUT method
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const product = req.body;
+            const option = { upsert: true };
+            const updateProduct = {
+                $set: {
+                    name: product.name,
+                    photoURL: product.photoURL,
+                    price: product.price,
+                    quantity: product.quantity,
+                }
+            }
+            const result = await productsCollection.updateOne(filter, updateProduct, option);
+            res.send(result);
+        })
+
     } finally { }
 }
 run().catch(error => console.error(error));
