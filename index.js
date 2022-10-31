@@ -2,18 +2,31 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
+const cors = require('cors');
+
+app.use(cors());
+app.use(express.json());
 
 // dbuser1:5B2PYCYai5q6XLjM
 const dbUser = process.env.REACT_APP_dbUser;
 const dbPassword = process.env.REACT_APP_dbPassword;
 
-const uri = `mongodb+srv://${dbUser}:${dbPassword}@cluster0.fbieij7.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://dbuser1:5B2PYCYai5q6XLjM@cluster0.fbieij7.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    console.log('db connected')
-    client.close();
-});
+const run = async () => {
+    try {
+        const productsCollection = client.db('daisyShopDB').collection('products');
+
+        // POST method
+        app.post('/products', async (req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            res.send(result);
+        })
+
+    } finally { }
+}
+run().catch(error => console.error(error));
 
 app.get('/', (req, res) => {
     res.send('Daisy Shop server is running');
