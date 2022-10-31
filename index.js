@@ -17,6 +17,14 @@ const run = async () => {
     try {
         const productsCollection = client.db('daisyShopDB').collection('products');
 
+        // GET method
+        app.get('/products', async (req, res) => {
+            const query = {};
+            const cursor = productsCollection.find(query);
+            const products = await cursor.toArray();
+            res.send(products);
+        })
+
         // POST method
         app.post('/products', async (req, res) => {
             const product = req.body;
