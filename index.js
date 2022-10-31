@@ -40,6 +40,14 @@ const run = async () => {
             res.send(result);
         })
 
+        // GET method [for getting single data]
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const product = await productsCollection.findOne(query);
+            res.send(product);
+        })
+
     } finally { }
 }
 run().catch(error => console.error(error));
